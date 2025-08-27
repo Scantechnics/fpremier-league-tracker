@@ -47,7 +47,7 @@ h1 {
 }
 
 script.js
-const apiKey = 'YOUR_API_KEY'; // Get from football-data.org
+const apiKey = '7e590136c5b64172ad8785b7d7494ec1'; // Get from football-data.org
 const matchesDiv = document.getElementById('matches');
 
 fetch('https://api.football-data.org/v4/competitions/PL/matches?season=2024', {
