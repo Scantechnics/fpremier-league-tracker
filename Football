@@ -1,3 +1,83 @@
 index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Premier League Matches</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Premier League Matches</h1>
+  <div id="matches">Loading matches...</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
 style.css
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#matches {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.match {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.match .teams {
+  font-weight: bold;
+}
+
+.match .date {
+  color: #666;
+}
+
 script.js
+const apiKey = 'YOUR_API_KEY'; // Get from football-data.org
+const matchesDiv = document.getElementById('matches');
+
+fetch('https://api.football-data.org/v4/competitions/PL/matches?season=2024', {
+  headers: { 'X-Auth-Token': apiKey }
+})
+.then(res => res.json())
+.then(data => {
+  const matches = data.matches;
+  matchesDiv.innerHTML = '';
+
+  matches.forEach(match => {
+    const div = document.createElement('div');
+    div.className = 'match';
+
+    const homeTeam = match.homeTeam.name;
+    const awayTeam = match.awayTeam.name;
+    const date = new Date(match.utcDate).toLocaleString();
+    const score = match.score.fullTime.home !== null
+      ? `${match.score.fullTime.home} - ${match.score.fullTime.away}`
+      : 'vs';
+
+    div.innerHTML = `
+      <div class="teams">${homeTeam} ${score} ${awayTeam}</div>
+      <div class="date">${date}</div>
+    `;
+
+    matchesDiv.appendChild(div);
+  });
+})
+.catch(err => {
+  matchesDiv.innerHTML = 'Failed to load matches.';
+  console.error(err);
+});
